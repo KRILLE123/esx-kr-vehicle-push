@@ -8,6 +8,9 @@
 1. Download the files and insert them into your resouce folder.
 2. Write esx-kr-vehicle-push in your server.cfg.
 
+**Note**
+I made parts of this script with Zeb.
+
 Video
 **https://streamable.com/pv8ed**
 
