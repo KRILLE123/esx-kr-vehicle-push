@@ -71,24 +71,26 @@ Citizen.CreateThread(function()
                 ESX.Streaming.RequestAnimDict('missfinale_c2ig_11')
                 TaskPlayAnim(ped, 'missfinale_c2ig_11', 'pushcar_offcliff_m', 2.0, -8.0, -1, 35, 0, 0, 0, 0)
                 Citizen.Wait(200)
+
+                local currentVehicle = Vehicle.Vehicle
                  while true do
                     Citizen.Wait(5)
                     if IsDisabledControlPressed(0, Keys["A"]) then
-                        TaskVehicleTempAction(PlayerPedId(), Vehicle.Vehicle, 11, 1000)
+                        TaskVehicleTempAction(PlayerPedId(), currentVehicle, 11, 1000)
                     end
 
                     if IsDisabledControlPressed(0, Keys["D"]) then
-                        TaskVehicleTempAction(PlayerPedId(), Vehicle.Vehicle, 10, 1000)
+                        TaskVehicleTempAction(PlayerPedId(), currentVehicle, 10, 1000)
                     end
 
                     if Vehicle.IsInFront then
-                        SetVehicleForwardSpeed(Vehicle.Vehicle, -1.0)
+                        SetVehicleForwardSpeed(currentVehicle, -1.0)
                     else
-                        SetVehicleForwardSpeed(Vehicle.Vehicle, 1.0)
+                        SetVehicleForwardSpeed(currentVehicle, 1.0)
                     end
 
-                    if HasEntityCollidedWithAnything(Vehicle.Vehicle) then
-                        SetVehicleOnGroundProperly(Vehicle.Vehicle)
+                    if HasEntityCollidedWithAnything(currentVehicle) then
+                        SetVehicleOnGroundProperly(currentVehicle)
                     end
 
                     if not IsDisabledControlPressed(0, Keys["E"]) then
