@@ -7,6 +7,12 @@ Citizen.CreateThread(function()
   end
 end)
 
+Config = {} 
+Config.DamageNeeded = 100.0 -- 100.0 being broken and 1000.0 being fixed a lower value than 100.0 will break it
+Config.MaxWidth = 5.0 -- Will complete soon
+Config.MaxHeight = 5.0
+Config.MaxLength = 5.0
+
 local Keys = {
   ["ESC"] = 322, ["F1"] = 288, ["F2"] = 289, ["F3"] = 170, ["F5"] = 166, ["F6"] = 167, ["F7"] = 168, ["F8"] = 169, ["F9"] = 56, ["F10"] = 57,
   ["~"] = 243, ["1"] = 157, ["2"] = 158, ["3"] = 160, ["4"] = 164, ["5"] = 165, ["6"] = 159, ["7"] = 161, ["8"] = 162, ["9"] = 163, ["-"] = 84, ["="] = 83, ["BACKSPACE"] = 177,
@@ -30,7 +36,7 @@ Citizen.CreateThread(function()
         local closestVehicle, Distance = ESX.Game.GetClosestVehicle()
         local vehicleCoords = GetEntityCoords(closestVehicle)
         local dimension = GetModelDimensions(GetEntityModel(closestVehicle), First, Second)
-        if Distance < 6.0  and not IsPedInAnyVehicle(ped, false)   then
+        if Distance < 6.0  and not IsPedInAnyVehicle(ped, false) then
             Vehicle.Coords = vehicleCoords
             Vehicle.Dimensions = dimension
             Vehicle.Vehicle = closestVehicle
@@ -54,12 +60,12 @@ Citizen.CreateThread(function()
         local ped = PlayerPedId()
         if Vehicle.Vehicle ~= nil then
  
-                if IsVehicleSeatFree(Vehicle.Vehicle, -1) and GetVehicleEngineHealth(Vehicle.Vehicle) <= 100 then
+                if IsVehicleSeatFree(Vehicle.Vehicle, -1) and GetVehicleEngineHealth(Vehicle.Vehicle) <= Config.DamageNeeded then
                     ESX.Game.Utils.DrawText3D({x = Vehicle.Coords.x, y = Vehicle.Coords.y, z = Vehicle.Coords.z}, 'Press [~g~SHIFT~w~] and [~g~E~w~] to push the vehicle', 0.4)
                 end
      
 
-            if IsControlPressed(0, Keys["LEFTSHIFT"]) and IsVehicleSeatFree(Vehicle.Vehicle, -1) and not IsEntityAttachedToEntity(ped, Vehicle.Vehicle) and IsControlJustPressed(0, Keys["E"])  and GetVehicleEngineHealth(Vehicle.Vehicle) <= 100 then
+            if IsControlPressed(0, Keys["LEFTSHIFT"]) and IsVehicleSeatFree(Vehicle.Vehicle, -1) and not IsEntityAttachedToEntity(ped, Vehicle.Vehicle) and IsControlJustPressed(0, Keys["E"])  and GetVehicleEngineHealth(Vehicle.Vehicle) <= Config.DamageNeeded then
                 NetworkRequestControlOfEntity(Vehicle.Vehicle)
                 local coords = GetEntityCoords(ped)
                 if Vehicle.IsInFront then    
