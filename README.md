@@ -11,6 +11,8 @@
 **Note**
 I made parts of this script with Zeb.
 
+Some of you may not be attached to the vehicle due to missing streaming.lua in es_extended, either update the script or add streaming.lua by downloading new es_extended and copying streaming.lua into your client folded and add it to your resource.lua /Zeb
+
 Video
 **https://streamable.com/pv8ed**
 
