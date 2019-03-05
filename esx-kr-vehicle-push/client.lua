@@ -7,6 +7,12 @@ Citizen.CreateThread(function()
   end
 end)
 
+Config = {} 
+Config.DamageNeeded = 100.0 -- 100.0 being broken and 1000.0 being fixed a lower value than 100.0 will break it
+Config.MaxWidth = 5.0 -- Will complete soon
+Config.MaxHeight = 5.0
+Config.MaxLength = 5.0
+
 local Keys = {
   ["ESC"] = 322, ["F1"] = 288, ["F2"] = 289, ["F3"] = 170, ["F5"] = 166, ["F6"] = 167, ["F7"] = 168, ["F8"] = 169, ["F9"] = 56, ["F10"] = 57,
   ["~"] = 243, ["1"] = 157, ["2"] = 158, ["3"] = 160, ["4"] = 164, ["5"] = 165, ["6"] = 159, ["7"] = 161, ["8"] = 162, ["9"] = 163, ["-"] = 84, ["="] = 83, ["BACKSPACE"] = 177,
@@ -30,7 +36,7 @@ Citizen.CreateThread(function()
         local closestVehicle, Distance = ESX.Game.GetClosestVehicle()
         local vehicleCoords = GetEntityCoords(closestVehicle)
         local dimension = GetModelDimensions(GetEntityModel(closestVehicle), First, Second)
-        if Distance < 6.0  and not IsPedInAnyVehicle(ped, false)   then
+        if Distance < 6.0  and not IsPedInAnyVehicle(ped, false) then
             Vehicle.Coords = vehicleCoords
             Vehicle.Dimensions = dimension
             Vehicle.Vehicle = closestVehicle
@@ -54,12 +60,12 @@ Citizen.CreateThread(function()
         local ped = PlayerPedId()
         if Vehicle.Vehicle ~= nil then
  
-                if IsVehicleSeatFree(Vehicle.Vehicle, -1) and GetVehicleEngineHealth(Vehicle.Vehicle) <= 100 then
+                if IsVehicleSeatFree(Vehicle.Vehicle, -1) and GetVehicleEngineHealth(Vehicle.Vehicle) <= Config.DamageNeeded then
                     ESX.Game.Utils.DrawText3D({x = Vehicle.Coords.x, y = Vehicle.Coords.y, z = Vehicle.Coords.z}, 'Press [~g~SHIFT~w~] and [~g~E~w~] to push the vehicle', 0.4)
                 end
      
 
-            if IsControlPressed(0, Keys["LEFTSHIFT"]) and IsVehicleSeatFree(Vehicle.Vehicle, -1) and not IsEntityAttachedToEntity(ped, Vehicle.Vehicle) and IsControlJustPressed(0, Keys["E"])  and GetVehicleEngineHealth(Vehicle.Vehicle) <= 100 then
+            if IsControlPressed(0, Keys["LEFTSHIFT"]) and IsVehicleSeatFree(Vehicle.Vehicle, -1) and not IsEntityAttachedToEntity(ped, Vehicle.Vehicle) and IsControlJustPressed(0, Keys["E"])  and GetVehicleEngineHealth(Vehicle.Vehicle) <= Config.DamageNeeded then
                 NetworkRequestControlOfEntity(Vehicle.Vehicle)
                 local coords = GetEntityCoords(ped)
                 if Vehicle.IsInFront then    
@@ -71,24 +77,26 @@ Citizen.CreateThread(function()
                 ESX.Streaming.RequestAnimDict('missfinale_c2ig_11')
                 TaskPlayAnim(ped, 'missfinale_c2ig_11', 'pushcar_offcliff_m', 2.0, -8.0, -1, 35, 0, 0, 0, 0)
                 Citizen.Wait(200)
+
+                local currentVehicle = Vehicle.Vehicle
                  while true do
                     Citizen.Wait(5)
                     if IsDisabledControlPressed(0, Keys["A"]) then
-                        TaskVehicleTempAction(PlayerPedId(), Vehicle.Vehicle, 11, 1000)
+                        TaskVehicleTempAction(PlayerPedId(), currentVehicle, 11, 1000)
                     end
 
                     if IsDisabledControlPressed(0, Keys["D"]) then
-                        TaskVehicleTempAction(PlayerPedId(), Vehicle.Vehicle, 10, 1000)
+                        TaskVehicleTempAction(PlayerPedId(), currentVehicle, 10, 1000)
                     end
 
                     if Vehicle.IsInFront then
-                        SetVehicleForwardSpeed(Vehicle.Vehicle, -1.0)
+                        SetVehicleForwardSpeed(currentVehicle, -1.0)
                     else
-                        SetVehicleForwardSpeed(Vehicle.Vehicle, 1.0)
+                        SetVehicleForwardSpeed(currentVehicle, 1.0)
                     end
 
-                    if HasEntityCollidedWithAnything(Vehicle.Vehicle) then
-                        SetVehicleOnGroundProperly(Vehicle.Vehicle)
+                    if HasEntityCollidedWithAnything(currentVehicle) then
+                        SetVehicleOnGroundProperly(currentVehicle)
                     end
 
                     if not IsDisabledControlPressed(0, Keys["E"]) then
