@@ -53,6 +53,10 @@ Citizen.CreateThread(function()
     end
 end)
 
+local angle = 0.0
+local anglemax = 40.0
+local anglemin = -40.0
+local rotangle = 1.0
 
 Citizen.CreateThread(function()
     while true do 
@@ -81,12 +85,33 @@ Citizen.CreateThread(function()
                 local currentVehicle = Vehicle.Vehicle
                  while true do
                     Citizen.Wait(5)
+                    local tangle = GetVehicleSteeringAngle(Vehicle.Vehicle)
                     if IsDisabledControlPressed(0, Keys["A"]) then
-                        TaskVehicleTempAction(PlayerPedId(), currentVehicle, 11, 1000)
+                      --TaskVehicleTempAction(PlayerPedId(), currentVehicle, 11, 1000)
+                      if angle < anglemax then
+                        angle = angle + rotangle
+                        SetVehicleSteeringAngle(Vehicle.Vehicle, angle)
+                      end
                     end
 
                     if IsDisabledControlPressed(0, Keys["D"]) then
-                        TaskVehicleTempAction(PlayerPedId(), currentVehicle, 10, 1000)
+                      --TaskVehicleTempAction(PlayerPedId(), currentVehicle, 10, 1000)
+                      if angle > anglemin then
+                        angle = angle - rotangle
+                        SetVehicleSteeringAngle(Vehicle.Vehicle, angle)
+                      end
+                      SetVehicleSteeringAngle(Vehicle.Vehicle, angle)
+                    end
+
+                    if IsDisabledControlPressed(0, Keys["W"]) then
+                      --TaskVehicleTempAction(PlayerPedId(), currentVehicle, 11, 1000)
+                      if angle > 0.0 then
+                        angle = angle - rotangle
+                        SetVehicleSteeringAngle(Vehicle.Vehicle, angle)
+                      elseif angle < 0.0 then
+                        angle = angle + rotangle
+                        SetVehicleSteeringAngle(Vehicle.Vehicle, angle)
+                      end
                     end
 
                     if Vehicle.IsInFront then
